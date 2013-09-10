@@ -12,13 +12,12 @@ class Instapaper
 	end
 
 	def add_with_hatebu(url)
-		RestClient.post("https://www.instapaper.com/api/add",
-			"username"=>@user, "password"=>@password, "url"=>url) do |res|
-			if res.body != "201" then return res.body end
-			location = res.headers[:content_location]
-			sleep 1
-			add("http://b.hatena.ne.jp/entry/" + location)
-		end
+		res = RestClient.post("https://www.instapaper.com/api/add",
+			"username"=>@user, "password"=>@password, "url"=>url)
+		if res != "201" then return res end
+		location = res.headers[:content_location]
+		sleep 1
+		add("http://b.hatena.ne.jp/entry/" + location)
 	end
 
 	def add_all_with_hatebu(urls)

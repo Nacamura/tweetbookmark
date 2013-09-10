@@ -21,4 +21,13 @@ class MyTwitter
 			t.text.slice(/http[^\s]*$/)
 		end
 	end
+
+	def gather_hatebu_urls_without_ng(regexp)
+		gather_timeline.select do |t|
+			puts t.text if t.text.match(regexp) #debug
+			t.text.match(regexp).nil?
+		end.map do |t|
+			t.text.slice(/http[^\s]*$/)
+		end
+	end
 end
