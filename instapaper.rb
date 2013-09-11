@@ -1,7 +1,10 @@
 require 'restclient'
 
 class Instapaper
+	include MyLogger
+
 	def initialize(settings)
+		@logger = get_logger
 		@user = settings["instapaper_user"]
 		@password = settings["instapaper_pw"]
 	end
@@ -21,9 +24,10 @@ class Instapaper
 	end
 
 	def add_all_with_hatebu(urls)
+		@logger.debug("add " + urls.length.to_s + " URLs")
 		urls.each do |url|
 			res = add_with_hatebu(url)
-			if res != "201" then puts res end
+			if res != "201" then @logger.warn(url + " : " + res) end
 			sleep 1
 		end
 	end
