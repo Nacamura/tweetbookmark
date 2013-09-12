@@ -1,7 +1,9 @@
 require 'twitter'
 
 class MyTwitter
+	include MyLogger
 	def initialize(settings)
+		@logger = get_logger
 		Twitter.configure do |config|
 			config.consumer_key = settings["consumer_key"]
 			config.consumer_secret = settings["consumer_secret"]
@@ -24,8 +26,9 @@ class MyTwitter
 
 	def gather_hatebu_urls_without_ng(regexp)
 		gather_timeline.select do |t|
-			puts t.text if t.text.match(regexp) #debug
-			t.text.match(regexp).nil?
+			ng_word = t.text.match(regexp)
+			@logger.debug("skip:" + t.text) if ng_word
+			ng_word.nil?
 		end.map do |t|
 			t.text.slice(/http[^\s]*$/)
 		end
