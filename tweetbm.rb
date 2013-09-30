@@ -10,7 +10,7 @@ class TweetBookMark
     stored_urls = load_json("urls.txt")
     urls = MyTwitter.new(settings).gather_hatebu_urls_without_ng(/艦隊*これ/).reverse!
     new_urls = urls.reject {|url| stored_urls.include? url}
-    Instapaper.new(settings).add_all_with_hatebu(new_urls)
+    Instapaper.new(settings).add_all(new_urls)
     store_json(urls, "urls.txt")
   end
 
