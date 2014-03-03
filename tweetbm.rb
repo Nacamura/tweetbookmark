@@ -2,6 +2,7 @@ require 'json'
 load './mylogger.rb'
 load './mytwitter.rb'
 load './instapaper.rb'
+load './pocket.rb'
 
 class TweetBookMark
   include MyLogger
@@ -11,6 +12,7 @@ class TweetBookMark
     urls = MyTwitter.new(settings).gather_hatebu_urls_without_ng(/艦隊*これ/).reverse!
     new_urls = urls.reject {|url| stored_urls.include? url}
     Instapaper.new(settings).add_all(new_urls)
+    Pocket.new(settings).add_all(new_urls)
     store_json(urls, "urls.txt")
   end
 
