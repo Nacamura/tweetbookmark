@@ -1,19 +1,19 @@
 require 'json'
-load './mylogger.rb'
-load './mytwitter.rb'
-load './instapaper.rb'
-load './pocket.rb'
+load './tweetbookmark/mylogger.rb'
+load './tweetbookmark/mytwitter.rb'
+load './tweetbookmark/instapaper.rb'
+load './tweetbookmark/pocket.rb'
 
 class TweetBookMark
   include MyLogger
-  def execute
-    settings = load_json("settings.txt")
-    stored_urls = load_json("urls.txt")
+  def call
+    settings = load_json("./tweetbookmark/settings.txt")
+    stored_urls = load_json("./tweetbookmark/urls.txt")
     urls = MyTwitter.new(settings).gather_hatebu_urls_without_ng(/艦隊*これ/).reverse!
     new_urls = urls.reject {|url| stored_urls.include? url}
     Instapaper.new(settings).add_all(new_urls)
     Pocket.new(settings).add_all(new_urls)
-    store_json(urls, "urls.txt")
+    store_json(urls, "./tweetbookmark/urls.txt")
   end
 
   def load_json(textfile_path)
@@ -28,5 +28,3 @@ class TweetBookMark
     end
   end
 end
-
-TweetBookMark.new.execute
