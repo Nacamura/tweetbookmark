@@ -24,13 +24,23 @@ class MyTwitter
 		end
 	end
 
-	def gather_hatebu_urls_without_ng(regexp)
-		gather_timeline.select do |t|
-			ng_word = t.text.match(regexp)
-			@logger.debug("skip:" + t.text) if ng_word
-			ng_word.nil?
+	def gather_hatebu_urls_without_ng(ng_words)
+		gather_timeline.reject do |t|
+			has_ng_word?(t.text, ng_words)
 		end.map do |t|
 			t.text.slice(/http[^\s]*$/)
 		end
 	end
+
+	def has_ng_word?(text, ng_words)
+		ng_words.map! {|ng_word| Regexp.new(ng_word)}
+		has_ng_word = false
+		ng_words.each do |ng_word|
+			has_ng_word = (ng_word.match(text) != nil)
+			break if has_ng_word
+		end
+		@logger.debug("skip:" + text) if has_ng_word
+		has_ng_word
+	end
+
 end

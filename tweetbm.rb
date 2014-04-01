@@ -9,7 +9,9 @@ class TweetBookMark
   def call
     settings = load_json("./tweetbookmark/settings.txt")
     stored_urls = load_json("./tweetbookmark/urls.txt")
-    urls = MyTwitter.new(settings).gather_hatebu_urls_without_ng(/艦隊*これ/).reverse!
+    twitter = MyTwitter.new(settings)
+    ng_words = settings["ng_words"]
+    urls = twitter.gather_hatebu_urls_without_ng(ng_words).reverse!
     new_urls = urls.reject {|url| stored_urls.include? url}
     Instapaper.new(settings).add_all(new_urls)
     Pocket.new(settings).add_all(new_urls)
