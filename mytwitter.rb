@@ -33,10 +33,9 @@ class MyTwitter
 	end
 
 	def has_ng_word?(text, ng_words)
-		ng_words.map! {|ng_word| Regexp.new(ng_word)}
 		has_ng_word = false
 		ng_words.each do |ng_word|
-			has_ng_word = (ng_word.match(text) != nil)
+			has_ng_word = (text.match(ng_word) != nil)
 			break if has_ng_word
 		end
 		@logger.debug("skip:" + text) if has_ng_word
