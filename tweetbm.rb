@@ -16,6 +16,7 @@ class TweetBookMark
     Instapaper.new(settings).add_all(new_urls)
     Pocket.new(settings).add_all(new_urls)
     store_json(urls, "urls.txt")
+    twitter.dump_recorded
   end
 
   def load_json(textfile_path)

@@ -12,6 +12,9 @@ class MyTwitter
 		end
 		@target_user = settings["target_user"]
 		@count = settings["count"]
+		@recorded_title = open('./recorded_title.txt', 'r') do |io|
+			io.readlines
+		end.map(&:strip)
 	end
 
 	def gather_timeline
@@ -28,6 +31,7 @@ class MyTwitter
 		gather_timeline.reject do |t|
 			has_ng_word?(t.text, ng_words)
 		end.map do |t|
+			record_title(t.text.gsub(/\(\d+ users\)/, "").gsub(/ *http:.*/, ""))
 			t.text.slice(/http[^\s]*$/)
 		end
 	end
@@ -40,6 +44,18 @@ class MyTwitter
 		end
 		@logger.debug("skip:" + text) if has_ng_word
 		has_ng_word
+	end
+
+	def record_title(title)
+		(@recorded_title << title.strip) if not (@recorded_title.include? title.strip)
+	end
+
+	def dump_recorded
+		open('./recorded_title.txt', 'w') do |io|
+			@recorded_title.each do |title|
+				io.puts title
+			end
+		end
 	end
 
 end
