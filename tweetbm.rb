@@ -10,7 +10,7 @@ class TweetBookMark
     settings = load_json("settings.txt")
     stored_urls = load_json("urls.txt")
     twitter = MyTwitter.new(settings)
-    ng_words = settings["ng_words"]
+    ng_words = load_json("ng_words.txt")
     urls = twitter.gather_hatebu_urls_without_ng(ng_words).reverse!
     new_urls = urls.reject {|url| stored_urls.include? url}
     Instapaper.new(settings).add_all(new_urls)
